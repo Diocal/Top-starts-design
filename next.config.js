@@ -5,6 +5,8 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
+
+
 const coreConfig = {
     typescript :{
         ignoreBuildErrors:true,
@@ -14,19 +16,18 @@ const coreConfig = {
     }
 };
 
+import withPWA from "@ducanh2912/next-pwa";
 
 import { withSentryConfig } from "@sentry/nextjs";
 
-// Injected content via Sentry wizard below
-
-
 const config = withSentryConfig(
+  
   coreConfig ,
   {
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
 
-  org: "bridge23-data",
+    org: "bridge23-data",
     project: "bridge23-data",
 
 
@@ -63,4 +64,17 @@ const config = withSentryConfig(
     automaticVercelMonitors: true,
   }
 );
-export default config;
+
+const new_config = withPWA({
+  dest: "public",
+  register: true,
+  workboxOptions: {
+    skipWaiting: true,
+  }
+})({config,  
+  reactStrictMode: false,
+  swcMinify: false,
+},
+);
+
+export default new_config;

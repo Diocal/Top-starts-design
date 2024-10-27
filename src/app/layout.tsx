@@ -14,6 +14,7 @@ import {
 } from "@clerk/nextjs";
 
 import TopNav from "./_components/topnav";
+import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "TopStart",
@@ -28,6 +29,10 @@ export default function RootLayout({
     <ClerkProvider signInForceRedirectUrl="/dashboard">
       <CSPostHogProvider>
         <html lang="en" className={`${GeistSans.variable} flex flex-col gap-4`}>
+          {/* <Head>
+            <link rel="manifest" href="public/manifest.json" />
+          </Head> */}
+
           <body>
             <TopNav></TopNav>
             {children}
