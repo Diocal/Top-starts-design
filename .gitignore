@@ -15,7 +15,7 @@
 
 # Mono auto generated files
 mono_crash.*
-
+.env
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -212,8 +212,10 @@ csx/
 
 # Microsoft Azure Emulator
 ecf/
+.env
 rcf/
-
+.next/
+.next
 # Windows Store app package directories and files
 AppPackages/
 BundleArtifacts/
