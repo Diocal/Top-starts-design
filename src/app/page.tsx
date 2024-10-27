@@ -195,9 +195,11 @@ export default function HomePage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <Button variant="default" className="whitespace-nowrap">
-                Topics 💡
-              </Button>
+              <Link href="/channel/topic">
+                <Button variant="default" className="whitespace-nowrap">
+                  Topics 💡
+                </Button>
+              </Link>
             </div>
 
             {/* Language Selector */}
