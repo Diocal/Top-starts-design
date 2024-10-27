@@ -10,6 +10,7 @@ import { Input } from "~/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Card } from "~/components/ui/card";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { ChevronRight } from "lucide-react";
 
 export default function HomePage() {
   const { userId } = useAuth();
@@ -217,6 +218,9 @@ export default function HomePage() {
               >
                 🇮🇩
               </Button>
+              <Link href="/channel/languaje">
+                <ChevronRight />
+              </Link>
             </div>
 
             {/* Sections */}

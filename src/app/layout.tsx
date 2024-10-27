@@ -30,9 +30,6 @@ export default function RootLayout({
     <ClerkProvider signInForceRedirectUrl="/dashboard">
       <CSPostHogProvider>
         <html lang="en" className={`${GeistSans.variable} flex flex-col gap-4`}>
-          <Head>
-            <link rel="manifest" href="/manifest.json" />
-          </Head>
           <body>
             <TopNav></TopNav>
             {children}
