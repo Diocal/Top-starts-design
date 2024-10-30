@@ -14,8 +14,8 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "flex h-12 rounded-[5px] overflow-hidden", // Borde redondeado exterior de 4px
-      "bg-[hsl(var(--tab-bg-inactive))]",
+      "inline-flex h-10 items-center justify-center bg-[hsl(var(--tab-bg-inactive))] p-1 text-muted-foreground",
+      "rounded-md", // Border radius solo en los bordes exteriores
       className
     )}
     {...props}
@@ -26,17 +26,23 @@ TabsList.displayName = TabsPrimitive.List.displayName;
 const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+>(({ className, value, ...props }, ref) => (
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex-1 flex items-center justify-center px-4 py-1.5 text-sm font-medium transition-all duration-200",
+      "flex-1 inline-flex items-center justify-center whitespace-nowrap px-4 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       "bg-[hsl(var(--tab-bg-inactive))] text-[hsl(var(--secondary-font-color))]",
-      "data-[state=active]:bg-[hsl(var(--tab-bg-active))] data-[state=active]:text-[hsl(var(--primary-font-color))]",
-      "first:rounded-l-[4px] last:rounded-r-[4px]", // Solo redondea los bordes exteriores
+      // Cambios en los bordes según la selección
+      value === "global"
+        ? "rounded-l-md" // Redondea solo el borde izquierdo para el primer botón
+        : value === "local"
+        ? "rounded-r-md" // Redondea solo el borde derecho para el último botón
+        : "",
+
+      // Estilos para el estado activo
+      "data-[state=active]:bg-[hsl(var(--tab-bg-active))] data-[state=active]:text-[hsl(var(--primary-font-color))] data-[state=active]:shadow-sm",
       className
     )}
-    style={{ height: "100%" }} // Asegura altura uniforme
     {...props}
   />
 ));

@@ -177,27 +177,37 @@ export default function HomePage() {
               onValueChange={(value) => setGlobal(value === "global")}
               className="mb-4"
             >
-              <TabsList className="w-full">
-                <TabsTrigger value="global" className="flex-1">
-                  Global <Globe className="ml-1 inline-block" />
+              <TabsList className="w-full flex overflow-hidden">
+                <TabsTrigger value="global" className="flex-1 font-semibold">
+                  Global 🌍
                 </TabsTrigger>
-                <TabsTrigger value="local" className="flex-1">
-                  Local <span className="ml-1">🇮🇩</span>
+                <TabsTrigger value="local" className="flex-1 font-semibold flex items-center">
+                  Local <img src="/indonesia.png" alt="Indonesia Flag" className="w-4 h-4 inline-block ml-1" />
                 </TabsTrigger>
               </TabsList>
             </Tabs>
 
+
+
             {/* Search and Topics */}
             <div className="my-4 flex items-center space-x-2">
-              <Input
-                type="text"
-                placeholder="Search..."
-                className="flex-1"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <div className="relative flex-1">
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white">
+                  🔍
+                </span>
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  className="pl-10 flex-1 bg-[hsl(var(--tab-bg-inactive))] text-white rounded-md h-12 focus:outline-none focus:ring-0 focus:border-none"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
               <Link href="/channel/topic">
-                <Button variant="default" className="whitespace-nowrap">
+                <Button
+                  variant="default"
+                  className="h-12 bg-[hsl(var(--tab-bg-inactive))] text-white rounded-md whitespace-nowrap"
+                >
                   Topics 💡
                 </Button>
               </Link>

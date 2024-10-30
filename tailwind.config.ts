@@ -53,10 +53,16 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Añade aquí el color personalizado
+        customYellow: "hsl(var(--custom-yellow))",
+        tabBgDefault: "hsl(var(--tab-bg-default))",
+        tabTextDefault: "hsl(var(--tab-text-default))",
+        tabBgActive: "hsl(var(--tab-bg-active))",
+        tabTextActive: "hsl(var(--tab-text-active))",
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
+        md: "calc(var(--radius) - 5px)",
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
