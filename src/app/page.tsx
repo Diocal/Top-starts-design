@@ -236,7 +236,8 @@ export default function HomePage() {
                 <ScrollArea className="w-full">
                   <div className="flex w-max space-x-4">
                     {section.data.map((card, cardIdx) => (
-                     <Card key={cardIdx} className="bg-gray-800 p-4 flex flex-col relative w-[342px] border-none">
+                      <Card key={cardIdx} className="p-4 flex flex-col relative w-[342px]" style={{ backgroundColor: 'hsl(var(--tab-bg-inactive))' }}>
+
 
                      <div className="absolute top-2 right-2 text-yellow-400 font-semibold flex items-center">
                        <img src="/star.png" alt="Star Icon" className="mr-1 w-4 h-4" />
