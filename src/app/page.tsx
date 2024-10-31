@@ -166,12 +166,13 @@ export default function HomePage() {
     },
   ];
 
+
+
   return (
     <main className="flex min-h-screen flex-col bg-black text-white">
       <div className="flex-1 overflow-auto p-4 pb-24">
         <div className="flex-1 pb-16">
           <SignedOut>
-            {/* Global / Local Toggle */}
             <Tabs
               defaultValue={global ? "global" : "local"}
               onValueChange={(value) => setGlobal(value === "global")}
@@ -187,14 +188,9 @@ export default function HomePage() {
               </TabsList>
             </Tabs>
 
-
-
-            {/* Search and Topics */}
             <div className="my-4 flex items-center space-x-2">
               <div className="relative flex-1">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white">
-                  🔍
-                </span>
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white">🔍</span>
                 <Input
                   type="text"
                   placeholder="Search..."
@@ -204,73 +200,62 @@ export default function HomePage() {
                 />
               </div>
               <Link href="/channel/topic">
-                <Button
-                  variant="default"
-                  className="h-12 bg-[hsl(var(--tab-bg-inactive))] text-white rounded-md whitespace-nowrap"
-                >
+                <Button variant="default" className="h-12 bg-[hsl(var(--tab-bg-inactive))] text-white rounded-md whitespace-nowrap">
                   Topics 💡
                 </Button>
               </Link>
             </div>
 
-            {/* Language Selector */}
-            <div className="mb-4 flex items-center space-x-2">
+            <div className="mb-4 flex items-center justify-between">
               <span>Choose language:</span>
-              <Button
-                variant={language === "en" ? "default" : "secondary"}
-                onClick={() => setLanguage("en")}
-              >
-                🇺🇸
-              </Button>
-              <Button
-                variant={language === "id" ? "default" : "secondary"}
-                onClick={() => setLanguage("id")}
-              >
-                🇮🇩
-              </Button>
-              <Link href="/channel/languaje">
-                <ChevronRight />
-              </Link>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setLanguage("en")}
+                  className={`${language === "en" ? "opacity-100" : "opacity-60"} focus:outline-none`}
+                >
+                  <img src="/usaflag.png" alt="USA Flag" className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setLanguage("id")}
+                  className={`${language === "id" ? "opacity-100" : "opacity-60"} focus:outline-none`}
+                >
+                  <img src="/indonesia.png" alt="Indonesia Flag" className="w-5 h-5" />
+                </button>
+                <Link href="/channel/languaje">
+                  <ChevronRight className="w-5 h-5" />
+                </Link>
+              </div>
             </div>
 
-            {/* Sections */}
             {sections.map((section, idx) => (
               <div key={idx} className="mb-6">
                 <div className="mb-2 flex items-center justify-between">
                   <h2 className="text-xl font-semibold">{section.title}</h2>
-                  <Button variant="link" className="p-0 text-yellow-400">
-                    See all
-                  </Button>
+                  <Button variant="link" className="p-0 text-white">See all</Button>
                 </div>
                 <ScrollArea className="w-full">
                   <div className="flex w-max space-x-4">
                     {section.data.map((card, cardIdx) => (
-                      <Card key={cardIdx} className="bg-gray-800">
-                        <div className="mb-2">
-                          <div className="flex items-center space-x-2">
-                            <Star className="text-yellow-400" />
-                            <span className="text-sm font-semibold">
-                              {card.sp} SP
-                            </span>
-                          </div>
-                          <h3 className="mt-2 text-lg font-bold">
-                            {card.title}
-                          </h3>
-                          <p className="mt-1 text-sm text-gray-400">
-                            {card.description}
-                          </p>
+                      <Card key={cardIdx} className="bg-gray-800 p-4 rounded-lg flex flex-col relative w-[342px]">
+                        <div className="absolute top-2 right-2 text-yellow-400 font-semibold flex items-center">
+                          <img src="/star.png" alt="Star Icon" className="mr-1 w-4 h-4" />
+                          <span>{card.sp} SP</span>
                         </div>
-                        <div className="mt-2 flex items-center space-x-4 text-sm">
-                          <span>👥 {card.members}</span>
-                          <span>⭐ {card.rating}</span>
-                          <span>🗣 {card.language}</span>
+                        <div className="flex items-start">
+                          <img src="/avatar1.png" alt="Avatar Icon" className="w-12 h-12 rounded-full mr-4" />
+                          <div>
+                            <h3 className="text-lg font-bold text-white">{card.title}</h3>
+                            <p className="text-gray-400 text-sm mt-1 whitespace-pre-line">{card.description}</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex items-center space-x-3 text-sm text-gray-400">
+                          <img src="/users1.png" alt="Users Icon" className="mr-1 w-4 h-4" /><span>{card.members}</span>
+                          <img src="/star.png" alt="Rating Icon" className="mr-1 w-4 h-4" /><span>{card.rating}</span>
+                          <Globe className="w-4 h-4" /><span>{card.language}</span>
                         </div>
                         <div className="mt-2 flex flex-wrap gap-2">
                           {card.tags.map((tag, tagIdx) => (
-                            <span
-                              key={tagIdx}
-                              className="mt-1 rounded-full bg-gray-700 px-3 py-1 text-xs"
-                            >
+                            <span key={tagIdx} className="mt-1 rounded-full bg-gray-700 px-3 py-1 text-xs">
                               {tag}
                             </span>
                           ))}
