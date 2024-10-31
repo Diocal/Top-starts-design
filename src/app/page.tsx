@@ -26,7 +26,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -35,7 +35,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -44,7 +44,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -53,7 +53,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -62,7 +62,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -71,7 +71,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -86,7 +86,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -95,7 +95,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -104,7 +104,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -113,7 +113,7 @@ export default function HomePage() {
         {
           sp: 50,
           title: "Topstars",
-          description: "This channel contains a lot of channels",
+          description: "This channel contains\na lot of channels",
           members: "20k",
           rating: "4.9",
           language: "English",
@@ -187,7 +187,7 @@ export default function HomePage() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-
+  
             <div className="my-4 flex items-center space-x-2">
               <div className="relative flex-1">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white">🔍</span>
@@ -205,7 +205,7 @@ export default function HomePage() {
                 </Button>
               </Link>
             </div>
-
+  
             <div className="mb-4 flex items-center justify-between">
               <span>Choose language:</span>
               <div className="flex items-center space-x-2">
@@ -226,7 +226,7 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-
+  
             {sections.map((section, idx) => (
               <div key={idx} className="mb-6">
                 <div className="mb-2 flex items-center justify-between">
@@ -236,31 +236,42 @@ export default function HomePage() {
                 <ScrollArea className="w-full">
                   <div className="flex w-max space-x-4">
                     {section.data.map((card, cardIdx) => (
-                      <Card key={cardIdx} className="bg-gray-800 p-4 rounded-lg flex flex-col relative w-[342px]">
-                        <div className="absolute top-2 right-2 text-yellow-400 font-semibold flex items-center">
-                          <img src="/star.png" alt="Star Icon" className="mr-1 w-4 h-4" />
-                          <span>{card.sp} SP</span>
-                        </div>
-                        <div className="flex items-start">
-                          <img src="/avatar1.png" alt="Avatar Icon" className="w-12 h-12 rounded-full mr-4" />
-                          <div>
-                            <h3 className="text-lg font-bold text-white">{card.title}</h3>
-                            <p className="text-gray-400 text-sm mt-1 whitespace-pre-line">{card.description}</p>
-                          </div>
-                        </div>
-                        <div className="mt-4 flex items-center space-x-3 text-sm text-gray-400">
-                          <img src="/users1.png" alt="Users Icon" className="mr-1 w-4 h-4" /><span>{card.members}</span>
-                          <img src="/star.png" alt="Rating Icon" className="mr-1 w-4 h-4" /><span>{card.rating}</span>
-                          <Globe className="w-4 h-4" /><span>{card.language}</span>
-                        </div>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {card.tags.map((tag, tagIdx) => (
-                            <span key={tagIdx} className="mt-1 rounded-full bg-gray-700 px-3 py-1 text-xs">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </Card>
+                     <Card key={cardIdx} className="bg-gray-800 p-4 flex flex-col relative w-[342px] border-none">
+
+                     <div className="absolute top-2 right-2 text-yellow-400 font-semibold flex items-center">
+                       <img src="/star.png" alt="Star Icon" className="mr-1 w-4 h-4" />
+                       <span>{card.sp} SP</span>
+                     </div>
+                     <div className="flex items-start mb-3">
+                       <img src="/avatar1.png" alt="Avatar Icon" className="w-16 h-16 rounded-full mr-4" />
+                       <div>
+                         <h3 className="text-lg font-bold text-white">{card.title}</h3>
+                         <p className="text-gray-400 text-sm mt-1 mb-2 whitespace-pre-line">{card.description}</p>
+                         <div className="flex items-center space-x-3 text-sm text-gray-400">
+                           <div className="flex items-center space-x-1">
+                             <img src="/users1.png" alt="Users Icon" className="w-4 h-4" />
+                             <span>{card.members}</span>
+                           </div>
+                           <div className="flex items-center space-x-1">
+                             <img src="/star.png" alt="Rating Icon" className="w-4 h-4" />
+                             <span>{card.rating}</span>
+                           </div>
+                           <div className="flex items-center space-x-1">
+                             <Globe className="w-4 h-4" />
+                             <span>{card.language}</span>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                     <div className="mt-[-5px] ml-[65px] flex justify-center space-x-2 ml-1">
+                       <Button variant="default" className="px-3 py-1 text-white font-semibold bg-black">
+                         Information
+                       </Button>
+                       <Button variant="default" className="px-3 py-1 text-white font-semibold bg-black">
+                         Entertainment
+                       </Button>
+                     </div>
+                   </Card>
                     ))}
                   </div>
                   <ScrollBar orientation="horizontal" />
@@ -273,4 +284,5 @@ export default function HomePage() {
       </div>
     </main>
   );
+  
 }
