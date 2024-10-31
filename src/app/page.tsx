@@ -236,43 +236,41 @@ export default function HomePage() {
                 <ScrollArea className="w-full">
                   <div className="flex w-max space-x-4">
                     {section.data.map((card, cardIdx) => (
-                      <Card key={cardIdx} className="p-4 flex flex-col relative w-[342px]" style={{ backgroundColor: 'hsl(var(--tab-bg-inactive))' }}>
-
-
-                     <div className="absolute top-2 right-2 text-yellow-400 font-semibold flex items-center">
-                       <img src="/star.png" alt="Star Icon" className="mr-1 w-4 h-4" />
-                       <span>{card.sp} SP</span>
-                     </div>
-                     <div className="flex items-start mb-3">
-                       <img src="/avatar1.png" alt="Avatar Icon" className="w-16 h-16 rounded-full mr-4" />
-                       <div>
-                         <h3 className="text-lg font-bold text-white">{card.title}</h3>
-                         <p className="text-gray-400 text-sm mt-1 mb-2 whitespace-pre-line">{card.description}</p>
-                         <div className="flex items-center space-x-3 text-sm text-gray-400">
-                           <div className="flex items-center space-x-1">
-                             <img src="/users1.png" alt="Users Icon" className="w-4 h-4" />
-                             <span>{card.members}</span>
-                           </div>
-                           <div className="flex items-center space-x-1">
-                             <img src="/star.png" alt="Rating Icon" className="w-4 h-4" />
-                             <span>{card.rating}</span>
-                           </div>
-                           <div className="flex items-center space-x-1">
-                             <Globe className="w-4 h-4" />
-                             <span>{card.language}</span>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                     <div className="mt-[-5px] ml-[65px] flex justify-center space-x-2 ml-1">
-                       <Button variant="default" className="px-3 py-1 text-white font-semibold bg-black">
-                         Information
-                       </Button>
-                       <Button variant="default" className="px-3 py-1 text-white font-semibold bg-black">
-                         Entertainment
-                       </Button>
-                     </div>
-                   </Card>
+                      <Card key={cardIdx} className="p-4 flex flex-col relative w-[342px]" style={{ backgroundColor: 'hsl(var(--tab-bg-inactive))', border: 'none' }}>
+                        <div className="absolute top-2 right-2 text-yellow-400 font-semibold flex items-center">
+                          <img src="/star.png" alt="Star Icon" className="mr-1 w-4 h-4" />
+                          <span>{card.sp} SP</span>
+                        </div>
+                        <div className="flex items-start mb-3">
+                          <img src="/avatar1.png" alt="Avatar Icon" className="w-16 h-16 rounded-full mr-4" />
+                          <div>
+                            <h3 className="text-lg font-bold text-white">{card.title}</h3>
+                            <p className="text-gray-400 text-sm mt-1 mb-2 whitespace-pre-line">{card.description}</p>
+                            <div className="flex items-center space-x-3 text-sm text-gray-400">
+                              <div className="flex items-center space-x-1">
+                                <img src="/users1.png" alt="Users Icon" className="w-4 h-4" />
+                                <span>{card.members}</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <img src="/star.png" alt="Rating Icon" className="w-4 h-4" />
+                                <span>{card.rating}</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Globe className="w-4 h-4" />
+                                <span>{card.language}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mt-[-5px] ml-[65px] flex justify-center space-x-2">
+                          <Button variant="default" className="px-3 py-1 text-white font-semibold bg-black">
+                            Information
+                          </Button>
+                          <Button variant="default" className="px-3 py-1 text-white font-semibold bg-black">
+                            Entertainment
+                          </Button>
+                        </div>
+                      </Card>
                     ))}
                   </div>
                   <ScrollBar orientation="horizontal" />
@@ -285,5 +283,4 @@ export default function HomePage() {
       </div>
     </main>
   );
-  
 }
