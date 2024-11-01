@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config = {
   darkMode: ["class"],
@@ -7,8 +7,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-
-	],
+  ],
   prefix: "",
   theme: {
     container: {
@@ -53,12 +52,14 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Añade aquí el color personalizado
-        customYellow: "hsl(var(--custom-yellow))",
+        // Define the Light Gold color here
+        lightGold: "hsl(var(--tab-bg-active))", // Use the HSL values for Light Gold
         tabBgDefault: "hsl(var(--tab-bg-default))",
         tabTextDefault: "hsl(var(--tab-text-default))",
         tabBgActive: "hsl(var(--tab-bg-active))",
         tabTextActive: "hsl(var(--tab-text-active))",
+        subtleLight: "hsl(var(--subtle-light))", // Define el color personalizado
+
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -82,6 +83,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;

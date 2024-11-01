@@ -34,6 +34,9 @@
     --secondary-font-color: 0 0% 100%; /* Secondary text color: white */
     --tab-bg-active: 49 92% 79%; /* Active background color */
     --tab-bg-inactive: 0 0% 8%; /* Inactive background color */
+    --light-gold: 49 92% 79%; 
+    --subtle-light: 222.86, 4.58%, 70%; /* Color en formato HSL basado en #AFB1B6 */
+
   }
 
   .dark {
@@ -66,7 +69,10 @@
     --primary-font-color: 0 0% 100%; /* White in dark mode */
     --secondary-font-color: 0 0% 0%; /* Black in dark mode */
     --tab-bg-active: 49 92% 79%; /* Yellow active background */
+    --light-gold: 49 92% 79%;
     --tab-bg-inactive: 0 0% 8%; /* Dark gray inactive background */
+    --subtle-light: 222.86, 4.58%, 70%; /* Color en formato HSL basado en #AFB1B6 */
+
   }
 }
 
@@ -79,7 +85,7 @@
   }
 
   /* Removes border when input is focused */
-  input:focus {
+  input:focus ,input:hover, input:active{
     outline: none;
     border: none;
     box-shadow: none;
