@@ -16,9 +16,7 @@ export default function HomePage() {
   const { userId } = useAuth();
   const [global, setGlobal] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  
-
-  const scrollContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const scrollContainerRefs = useRef<Array<HTMLDivElement | null>>([]);
   const cardWidth = 340; // Ajusta según el ancho de tu tarjeta
   const [scrollIndices, setScrollIndices] = useState<{ [key: number]: number }>({});
   // Use Effect with Intersection Observer to update scroll index dynamically
@@ -48,6 +46,7 @@ export default function HomePage() {
       };
     });
   }, []);
+  // Actualiza el índice de desplazamiento según el scroll
   const handleScroll = (sectionIdx: number) => {
     const currentRef = scrollContainerRefs.current[sectionIdx];
     if (currentRef) {
@@ -55,7 +54,6 @@ export default function HomePage() {
       setScrollIndices((prev) => ({ ...prev, [sectionIdx]: newIndex }));
     }
   };
-  
   const sections = [
     {
       title: "Top members",
@@ -240,7 +238,8 @@ export default function HomePage() {
               <div key={idx} className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">{section.title}</h2>
 
-                <ScrollArea className="w-full overflow-x-auto pb-4 whitespace-nowrap" ref={(el) => (scrollContainerRefs.current[idx] = el as HTMLDivElement | null)}>
+                <ScrollArea className="w-full overflow-x-auto pb-4 whitespace-nowrap" ref={(el) => (scrollContainerRefs.current[idx] = el as HTMLDivElement | null)}
+                  onScroll={() => handleScroll(idx)}>
                   
                   <div className="inline-flex space-x-4" onScroll={() => handleScroll(idx)}>
                     {section.data.map((card, cardIdx) => (
@@ -280,18 +279,15 @@ export default function HomePage() {
                   <ScrollBar orientation="horizontal" />
                 </ScrollArea>
                 
-              {/* Indicador de página */}
-              <div className="flex justify-center mt-2 space-x-2">
-                {section.data.map((_, cardIdx) => (
-                  <span
-                    key={cardIdx}
-                    onClick={() => scrollContainerRefs.current[idx]?.scrollTo({ left: cardIdx * cardWidth, behavior: "smooth" })}
-                    className={`cursor-pointer h-2 w-2 rounded-full transition-all duration-300 ${
-                      scrollIndices[idx] === cardIdx ? "bg-yellow-500 w-4 h-2" : "bg-gray-500"
-                    }`}
-                  ></span>
-                ))}
-              </div>
+                {/* Indicadores de paginación */}
+                <div className="flex justify-center mt-2 space-x-2">
+                  {section.data.map((_, index) => (
+                    <span
+                      key={index}
+                      className={`h-2 w-2 rounded-full transition-all duration-300 ${scrollIndices[idx] === index ? "bg-yellow-500 w-4" : "bg-gray-500"}`}
+                    ></span>
+                  ))}
+                </div>
 
               </div>
             ))}
