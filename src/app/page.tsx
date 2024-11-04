@@ -1,90 +1,19 @@
-
-
 "use client";
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef } from "react";
 import { SignedOut, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Card } from "~/components/ui/card";
-declare global {
-  interface Window {
-    scrollContainerRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
-  }}
 
 export default function HomePage() {
   const { userId } = useAuth();
   const [global, setGlobal] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const scrollContainerRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [currentIdx, setCurrentIdx] = useState<number | null>(null);
   const [scrollIndices, setScrollIndices] = useState<{ [key: number]: number }>({});
 
-  // Asigna scrollContainerRefs a window para pruebas en la consola
-  useEffect(() => {
-    window.scrollContainerRefs = scrollContainerRefs;
-  }, []);
-
-const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
-  const currentRef = scrollContainerRefs.current[sectionIdx];
-  const card = currentRef?.children[0]?.children[cardIdx] as HTMLElement | undefined;
-
-  if (card instanceof HTMLElement) {
-    card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-    setScrollIndices((prev) => ({ ...prev, [sectionIdx]: cardIdx }));
-  }
-};
-
-  const handleMouseDown = (e: React.MouseEvent, idx: number) => {
-    console.log("Mouse down on section:", idx);
-    setIsDragging(true);
-    setStartX(e.clientX);
-    setScrollLeft(scrollContainerRefs.current[idx]?.scrollLeft || 0);
-    setCurrentIdx(idx);
-    e.preventDefault();
-  };
-
-  const handleMouseMove = useCallback(
-    (event: MouseEvent) => {
-      if (!isDragging || currentIdx === null) return;
-      const x = event.clientX;
-      const delta = x - startX;
-      const scrollContainer = scrollContainerRefs.current[currentIdx];
-      if (scrollContainer) {
-        scrollContainer.scrollLeft = scrollLeft - delta;
-        console.log(`Dragging... Delta: ${delta}, New scrollLeft: ${scrollContainer.scrollLeft}`);
-      }
-    },
-    [isDragging, startX, scrollLeft, currentIdx]
-  );
-
-  const handleMouseUp = useCallback(() => {
-    console.log("Mouse up - drag ended");
-    setIsDragging(false);
-    setCurrentIdx(null);
-  }, []);
-
-  useEffect(() => {
-    if (isDragging) {
-      console.log("Adding mousemove and mouseup listeners");
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-    } else {
-      console.log("Removing mousemove and mouseup listeners");
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      console.log("Cleanup: removing listeners");
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging, handleMouseMove, handleMouseUp]);
   const sections = [
     {
       title: "Top members",
@@ -232,7 +161,24 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
     },
   ];
 
+  const handleScroll = (sectionIdx: number) => {
+    const container = scrollContainerRefs.current[sectionIdx];
+    if (container) {
+      const slideWidth = container.scrollWidth / container.childElementCount;
+      const newIndex = Math.round(container.scrollLeft / slideWidth);
+      setScrollIndices((prev) => ({ ...prev, [sectionIdx]: newIndex }));
+    }
+  };
 
+  const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
+    const currentRef = scrollContainerRefs.current[sectionIdx];
+    const card = currentRef?.children[cardIdx] as HTMLElement | undefined;
+
+    if (card) {
+      card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      setScrollIndices((prev) => ({ ...prev, [sectionIdx]: cardIdx }));
+    }
+  };
 
 
 
@@ -246,7 +192,7 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
               onValueChange={(value) => setGlobal(value === "global")}
               className="mb-4"
             >
-              <TabsList className="w-full flex overflow-hidden">
+              <TabsList className="w-full flex overflow-auto">
                 <TabsTrigger value="global" className="flex-1 font-semibold">
                   Global 🌍
                 </TabsTrigger>
@@ -256,11 +202,11 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-
+  
             <div className="my-4 flex items-center space-x-2">
               <div className="relative flex-1">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <svg
+                  <svg
                     width="20"
                     height="20"
                     viewBox="0 0 24 24"
@@ -289,38 +235,32 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
                 </Button>
               </Link>
             </div>
-
-            {sections.map((section, idx) => (
-              <div key={idx} className="mb-6">
+  
+            {sections.map((section, sectionIdx) => (
+              <div key={sectionIdx} className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">{section.title}</h2>
-
+  
                 <div
-                  className={`w-full overflow-hidden pb-4 whitespace-nowrap ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
-                  ref={(el: HTMLDivElement | null) => {
-                    scrollContainerRefs.current[idx] = el;
-                  }}
-                  onMouseDown={(e) => handleMouseDown(e, idx)}
+                  ref={(el) => (scrollContainerRefs.current[sectionIdx] = el)}
+                  onScroll={() => handleScroll(sectionIdx)}
+                  className="w-full overflow-x-auto whitespace-nowrap flex space-x-4 pb-4 snap-x snap-mandatory scroll-smooth"
+                  style={{ scrollBehavior: "smooth" }}
                 >
-                  <div className="inline-flex space-x-4">
-                    {section.data.map((card, cardIdx) => (
-                      <Card
-                        key={cardIdx}
-                        className="p-4 flex-shrink-0 relative w-[342px]"
-                        style={{
-                          backgroundColor: "hsl(var(--tab-bg-inactive))",
-                          border: "none",
-                        }}
-                      >
-                         <div
-                          className="absolute top-2 right-2 flex items-center"
-                          style={{
-                            fontFamily: "Work Sans, sans-serif",
-                            fontSize: "12px",
-                            fontWeight: "300",
-                            lineHeight: "16px",
-                            letterSpacing: "2.5px",
-                            color: "hsl(var(--tab-bg-active))",
-                          }}
+                  {section.data.map((card, cardIdx) => (
+                    <Card
+                      key={cardIdx}
+                      className="p-4 flex-shrink-0 w-[342px] bg-[hsl(var(--tab-bg-inactive))] snap-center border-none relative"
+                    >
+                    <div
+                      className="absolute top-2 right-2 flex items-center"
+                      style={{
+                      fontFamily: "Work Sans, sans-serif",
+                      fontSize: "12px",
+                      fontWeight: "300",
+                      lineHeight: "16px",
+                      letterSpacing: "2.5px",
+                      color: "hsl(var(--tab-bg-active))",
+                      }}
                         >
                           <img src="/star.png" alt="Star Icon" className="mr-1 w-4 h-4" />
                           <span>{card.sp} SP</span>
@@ -328,7 +268,7 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
                         <div className="flex items-start mb-3">
                           <img src="/avatar1.png" alt="Avatar Icon" className="w-16 h-16 rounded-full mr-4" />
                           <div>
-                          <h3
+                        <h3
                               className="text-white"
                               style={{
                                 fontFamily: "Work Sans, sans-serif",
@@ -340,7 +280,7 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
                             >
                               {card.title}
                             </h3>
-                            <p
+                          <p
                               className="mt-1 mb-2 whitespace-pre-line"
                               style={{
                                 fontFamily: "Work Sans, sans-serif",
@@ -353,8 +293,7 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
                             >
                               {card.description}
                             </p>
-
-                            <div className="flex items-center space-x-3 text-sm text-gray-400">
+                          <div className="flex items-center space-x-3 text-sm text-gray-400">
                               <div className="flex items-center space-x-1 text-[hsl(var(--icon-color))]">
                                 <img src="/users1.png" alt="Users Icon" className="w-4 h-4 object-contain" />
                                 <span
@@ -401,38 +340,37 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
                                 </span>
                               </div>
                               </div>
-                          </div>
                         </div>
-                        <div className="mt-[-5px] ml-[45px] flex justify-center space-x-2">
-                          <Button
-                            variant="default"
-                            className="px-3 py-1 font-medium text-[12px] leading-[16px] tracking-[0.6px]"
-                            style={{ fontFamily: "Work Sans, sans-serif", color: "white", backgroundColor: "black" }}
-                          >
-                            Information
-                          </Button>
-                          <Button
-                            variant="default"
-                            className="px-3 py-1 font-medium text-[12px] leading-[16px] tracking-[0.6px]"
-                            style={{ fontFamily: "Work Sans, sans-serif", color: "white", backgroundColor: "black" }}
-                          >
-                            Entertainment
-                          </Button>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
+                      </div>
+                      <div className="mt-[-5px] ml-[45px] flex justify-center space-x-2">
+                        <Button
+                          variant="default"
+                          className="px-3 py-1 font-medium text-[12px] leading-[16px] tracking-[0.6px]"
+                          style={{ fontFamily: "Work Sans, sans-serif", color: "white", backgroundColor: "black" }}
+                        >
+                          Information
+                        </Button>
+                        <Button
+                          variant="default"
+                          className="px-3 py-1 font-medium text-[12px] leading-[16px] tracking-[0.6px]"
+                          style={{ fontFamily: "Work Sans, sans-serif", color: "white", backgroundColor: "black" }}
+                        >
+                          Entertainment
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
                 </div>
-
+  
                 <div className="flex justify-center mt-2 space-x-2">
-                {section.data.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => scrollToIndex(idx, i)}
-                    className={`w-3 h-3 rounded-full ${(scrollIndices[idx] ?? -1) === i ? "bg-yellow-500" : "bg-gray-400"}`}
-                  />
-                ))}
-              </div>
+                  {section.data.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => scrollToIndex(sectionIdx, i)}
+                      className={`transition-all duration-300 ${scrollIndices[sectionIdx] === i ? "bg-yellow-500 w-8 h-3 rounded-full" : "bg-gray-400 w-3 h-3 rounded-full"}`}
+                    />
+                  ))}
+                </div>
               </div>
             ))}
           </SignedOut>
@@ -440,5 +378,6 @@ const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
       </div>
     </main>
   );
+  
 }
 
