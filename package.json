@@ -1,5 +1,5 @@
 {
-  "name": "data-seller",
+  "name": "topstars",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -24,6 +24,7 @@
     "@radix-ui/react-tabs": "^1.1.0",
     "@sentry/nextjs": "^8.26.0",
     "@t3-oss/env-nextjs": "^0.10.1",
+    "@vercel/postgres": "^0.10.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.33.0",
@@ -52,7 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
     "autoprefixer": "^10.4.20",
-    "drizzle-kit": "^0.24.1",
+    "drizzle-kit": "^0.24.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.4",
     "eslint-plugin-drizzle": "^0.2.3",
