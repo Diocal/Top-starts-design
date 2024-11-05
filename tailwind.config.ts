@@ -18,6 +18,9 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        workSans: ['"Work Sans"', 'sans-serif'], // Add this line
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
