@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef , useCallback  } from "react";
 import { SignedOut, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
