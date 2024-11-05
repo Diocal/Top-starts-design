@@ -6,14 +6,94 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Card } from "~/components/ui/card";
+declare global {
+  interface Window {
+    scrollContainerRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
+  }
+}
 
 export default function HomePage() {
   const { userId } = useAuth();
   const [global, setGlobal] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const scrollContainerRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [scrollIndices, setScrollIndices] = useState<{ [key: number]: number }>({});
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [currentIdx, setCurrentIdx] = useState<number | null>(null);
+  const [scrollIndices, setScrollIndices] = useState<{ [key: number]: number }>(
+    {},
+  );
 
+  // Asigna scrollContainerRefs a window para pruebas en la consola
+  useEffect(() => {
+    window.scrollContainerRefs = scrollContainerRefs;
+  }, []);
+
+  const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
+    const currentRef = scrollContainerRefs.current[sectionIdx];
+    const card = currentRef?.children[0]?.children[cardIdx] as
+      | HTMLElement
+      | undefined;
+
+    if (card instanceof HTMLElement) {
+      card.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+      setScrollIndices((prev) => ({ ...prev, [sectionIdx]: cardIdx }));
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent, idx: number) => {
+    console.log("Mouse down on section:", idx);
+    setIsDragging(true);
+    setStartX(e.clientX);
+    setScrollLeft(scrollContainerRefs.current[idx]?.scrollLeft || 0);
+    setCurrentIdx(idx);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (!isDragging || currentIdx === null) return;
+      const x = event.clientX;
+      const delta = x - startX;
+      const scrollContainer = scrollContainerRefs.current[currentIdx];
+      if (scrollContainer) {
+        scrollContainer.scrollLeft = scrollLeft - delta;
+        console.log(
+          `Dragging... Delta: ${delta}, New scrollLeft: ${scrollContainer.scrollLeft}`,
+        );
+      }
+    },
+    [isDragging, startX, scrollLeft, currentIdx],
+  );
+
+  const handleMouseUp = useCallback(() => {
+    console.log("Mouse up - drag ended");
+    setIsDragging(false);
+    setCurrentIdx(null);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      console.log("Adding mousemove and mouseup listeners");
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    } else {
+      console.log("Removing mousemove and mouseup listeners");
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      console.log("Cleanup: removing listeners");
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, handleMouseMove, handleMouseUp]);
   const sections = [
     {
       title: "Top members",
@@ -161,27 +241,6 @@ export default function HomePage() {
     },
   ];
 
-  const handleScroll = (sectionIdx: number) => {
-    const container = scrollContainerRefs.current[sectionIdx];
-    if (container) {
-      const slideWidth = container.scrollWidth / container.childElementCount;
-      const newIndex = Math.round(container.scrollLeft / slideWidth);
-      setScrollIndices((prev) => ({ ...prev, [sectionIdx]: newIndex }));
-    }
-  };
-
-  const scrollToIndex = (sectionIdx: number, cardIdx: number) => {
-    const currentRef = scrollContainerRefs.current[sectionIdx];
-    const card = currentRef?.children[cardIdx] as HTMLElement | undefined;
-
-    if (card) {
-      card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-      setScrollIndices((prev) => ({ ...prev, [sectionIdx]: cardIdx }));
-    }
-  };
-
-
-
   return (
     <main className="flex min-h-screen flex-col bg-black text-white">
       <div className="flex-1 overflow-auto p-4 pb-24">
@@ -192,20 +251,27 @@ export default function HomePage() {
               onValueChange={(value) => setGlobal(value === "global")}
               className="mb-4"
             >
-              <TabsList className="w-full flex overflow-auto">
+              <TabsList className="flex w-full overflow-hidden">
                 <TabsTrigger value="global" className="flex-1 font-semibold">
                   Global 🌍
                 </TabsTrigger>
-                <TabsTrigger value="local" className="flex-1 font-semibold flex items-center">
+                <TabsTrigger
+                  value="local"
+                  className="flex flex-1 items-center font-semibold"
+                >
                   Local
-                  <img src="/indonesia.png" alt="Indonesia Flag" className="w-4 h-4 inline-block ml-1" />
+                  <img
+                    src="/indonesia.png"
+                    alt="Indonesia Flag"
+                    className="ml-1 inline-block h-4 w-4"
+                  />
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-  
+
             <div className="my-4 flex items-center space-x-2">
               <div className="relative flex-1">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 transform">
                   <svg
                     width="20"
                     height="20"
@@ -223,52 +289,72 @@ export default function HomePage() {
                 <Input
                   type="text"
                   placeholder="Search..."
-                  className="pl-10 flex-1 bg-[hsl(var(--tab-bg-inactive))] text-white rounded-md h-12 focus:outline-none focus:ring-0"
+                  className="h-12 flex-1 rounded-md bg-[hsl(var(--tab-bg-inactive))] pl-10 text-white focus:outline-none focus:ring-0"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{ borderColor: "transparent", color: "rgba(255, 255, 255, 0.85)" }}
+                  style={{
+                    borderColor: "transparent",
+                    color: "rgba(255, 255, 255, 0.85)",
+                  }}
                 />
               </div>
               <Link href="/channel/topic">
-                <Button variant="default" className="h-12 bg-[hsl(var(--tab-bg-inactive))] text-white rounded-md whitespace-nowrap">
+                <Button
+                  variant="default"
+                  className="h-12 whitespace-nowrap rounded-md bg-[hsl(var(--tab-bg-inactive))] text-white"
+                >
                   Topics 💡
                 </Button>
               </Link>
             </div>
-  
-            {sections.map((section, sectionIdx) => (
-              <div key={sectionIdx} className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">{section.title}</h2>
-  
+
+            {sections.map((section, idx) => (
+              <div key={idx} className="mb-6">
+                <h2 className="mb-2 text-xl font-semibold">{section.title}</h2>
+
                 <div
-                  ref={(el) => (scrollContainerRefs.current[sectionIdx] = el)}
-                  onScroll={() => handleScroll(sectionIdx)}
-                  className="w-full overflow-x-auto whitespace-nowrap flex space-x-4 pb-4 snap-x snap-mandatory scroll-smooth"
-                  style={{ scrollBehavior: "smooth" }}
+                  className={`w-full overflow-hidden whitespace-nowrap pb-4 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+                  ref={(el: HTMLDivElement | null) => {
+                    scrollContainerRefs.current[idx] = el;
+                  }}
+                  onMouseDown={(e) => handleMouseDown(e, idx)}
                 >
-                  {section.data.map((card, cardIdx) => (
-                    <Card
-                      key={cardIdx}
-                      className="p-4 flex-shrink-0 w-[342px] bg-[hsl(var(--tab-bg-inactive))] snap-center border-none relative"
-                    >
-                    <div
-                      className="absolute top-2 right-2 flex items-center"
-                      style={{
-                      fontFamily: "Work Sans, sans-serif",
-                      fontSize: "12px",
-                      fontWeight: "300",
-                      lineHeight: "16px",
-                      letterSpacing: "2.5px",
-                      color: "hsl(var(--tab-bg-active))",
-                      }}
+                  <div className="inline-flex space-x-4">
+                    {section.data.map((card, cardIdx) => (
+                      <Card
+                        key={cardIdx}
+                        className="relative w-[342px] flex-shrink-0 p-4"
+                        style={{
+                          backgroundColor: "hsl(var(--tab-bg-inactive))",
+                          border: "none",
+                        }}
+                      >
+                        <div
+                          className="absolute right-2 top-2 flex items-center"
+                          style={{
+                            fontFamily: "Work Sans, sans-serif",
+                            fontSize: "12px",
+                            fontWeight: "300",
+                            lineHeight: "16px",
+                            letterSpacing: "2.5px",
+                            color: "hsl(var(--tab-bg-active))",
+                          }}
                         >
-                          <img src="/star.png" alt="Star Icon" className="mr-1 w-4 h-4" />
+                          <img
+                            src="/star.png"
+                            alt="Star Icon"
+                            className="mr-1 h-4 w-4"
+                          />
                           <span>{card.sp} SP</span>
                         </div>
-                        <div className="flex items-start mb-3">
-                          <img src="/avatar1.png" alt="Avatar Icon" className="w-16 h-16 rounded-full mr-4" />
+                        <div className="mb-3 flex items-start">
+                          <img
+                            src="/avatar1.png"
+                            alt="Avatar Icon"
+                            className="mr-4 h-16 w-16 rounded-full"
+                          />
                           <div>
-                        <h3
+                            <h3
                               className="text-white"
                               style={{
                                 fontFamily: "Work Sans, sans-serif",
@@ -280,8 +366,8 @@ export default function HomePage() {
                             >
                               {card.title}
                             </h3>
-                          <p
-                              className="mt-1 mb-2 whitespace-pre-line"
+                            <p
+                              className="mb-2 mt-1 whitespace-pre-line"
                               style={{
                                 fontFamily: "Work Sans, sans-serif",
                                 fontSize: "12px",
@@ -293,9 +379,13 @@ export default function HomePage() {
                             >
                               {card.description}
                             </p>
-                          <div className="flex items-center space-x-3 text-sm text-gray-400">
+                            <div className="flex items-center space-x-3 text-sm text-gray-400">
                               <div className="flex items-center space-x-1 text-[hsl(var(--icon-color))]">
-                                <img src="/users1.png" alt="Users Icon" className="w-4 h-4 object-contain" />
+                                <img
+                                  src="/users1.png"
+                                  alt="Users Icon"
+                                  className="h-4 w-4 object-contain"
+                                />
                                 <span
                                   style={{
                                     fontFamily: "Work Sans, sans-serif",
@@ -310,7 +400,11 @@ export default function HomePage() {
                                 </span>
                               </div>
                               <div className="flex items-center space-x-1">
-                                <img src="/star.png" alt="Rating Icon" className="w-4 h-4" />
+                                <img
+                                  src="/star.png"
+                                  alt="Rating Icon"
+                                  className="h-4 w-4"
+                                />
                                 <span
                                   style={{
                                     fontFamily: "Work Sans, sans-serif",
@@ -325,7 +419,11 @@ export default function HomePage() {
                                 </span>
                               </div>
                               <div className="flex items-center space-x-1">
-                                <img src="/translate.png" alt="Language Icon" className="w-4 h-4" />
+                                <img
+                                  src="/translate.png"
+                                  alt="Language Icon"
+                                  className="h-4 w-4"
+                                />
                                 <span
                                   style={{
                                     fontFamily: "Work Sans, sans-serif",
@@ -339,35 +437,44 @@ export default function HomePage() {
                                   {card.language}
                                 </span>
                               </div>
-                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="mt-[-5px] ml-[45px] flex justify-center space-x-2">
-                        <Button
-                          variant="default"
-                          className="px-3 py-1 font-medium text-[12px] leading-[16px] tracking-[0.6px]"
-                          style={{ fontFamily: "Work Sans, sans-serif", color: "white", backgroundColor: "black" }}
-                        >
-                          Information
-                        </Button>
-                        <Button
-                          variant="default"
-                          className="px-3 py-1 font-medium text-[12px] leading-[16px] tracking-[0.6px]"
-                          style={{ fontFamily: "Work Sans, sans-serif", color: "white", backgroundColor: "black" }}
-                        >
-                          Entertainment
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
+                        <div className="ml-[45px] mt-[-5px] flex justify-center space-x-2">
+                          <Button
+                            variant="default"
+                            className="px-3 py-1 text-[12px] font-medium leading-[16px] tracking-[0.6px]"
+                            style={{
+                              fontFamily: "Work Sans, sans-serif",
+                              color: "white",
+                              backgroundColor: "black",
+                            }}
+                          >
+                            Information
+                          </Button>
+                          <Button
+                            variant="default"
+                            className="px-3 py-1 text-[12px] font-medium leading-[16px] tracking-[0.6px]"
+                            style={{
+                              fontFamily: "Work Sans, sans-serif",
+                              color: "white",
+                              backgroundColor: "black",
+                            }}
+                          >
+                            Entertainment
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
                 </div>
-  
-                <div className="flex justify-center mt-2 space-x-2">
+
+                <div className="mt-2 flex justify-center space-x-2">
                   {section.data.map((_, i) => (
                     <button
                       key={i}
-                      onClick={() => scrollToIndex(sectionIdx, i)}
-                      className={`transition-all duration-300 ${scrollIndices[sectionIdx] === i ? "bg-yellow-500 w-8 h-3 rounded-full" : "bg-gray-400 w-3 h-3 rounded-full"}`}
+                      onClick={() => scrollToIndex(idx, i)}
+                      className={`h-3 w-3 rounded-full ${(scrollIndices[idx] ?? -1) === i ? "bg-yellow-500" : "bg-gray-400"}`}
                     />
                   ))}
                 </div>
@@ -378,6 +485,4 @@ export default function HomePage() {
       </div>
     </main>
   );
-  
 }
-

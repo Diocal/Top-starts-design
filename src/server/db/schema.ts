@@ -36,6 +36,7 @@ export const userConfig = createTable(
     userId: serial("user_id").primaryKey(),
     location: varchar("location", { length: 100 }).notNull(),
     language: varchar("language", { length: 10 }).notNull(),
+    creationDate: timestamp('creation_date').defaultNow().notNull()
   }
 );
 
@@ -68,5 +69,6 @@ export const topics = createTable(
   {
     topicId: serial("topic_id").primaryKey(),
     topicValue: text("topic_value").notNull().unique(),
+    creationDate: timestamp('creation_date').defaultNow().notNull()
   }
 );
