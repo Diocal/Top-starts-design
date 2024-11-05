@@ -35,7 +35,7 @@ export default function Topic() {
           <button
             key={topic}
             onClick={() => toggleTopic(topic)}
-            className={`px-3.8 py-1.5 text-center rounded-md transition-all duration-200 text-[16px] leading-[24px] tracking-[0px] font-normal ${
+            className={`px-4 py-1.5 text-center rounded-md transition-all duration-200 text-[16px] leading-[24px] tracking-[0px] font-normal ${
               selectedTopics.includes(topic) ? "bg-lightGold text-black" : "bg-gray-800 text-white"
             } hover:bg-gray-700`}
           >
