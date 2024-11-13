@@ -1,80 +1,47 @@
 /**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
+ * Carga las variables de entorno si es necesario
  */
 await import("./src/env.js");
 
-/** @type {import("next").NextConfig} */
-
-
+// Configuración base de Next.js
+/** @type {import('next').NextConfig} */
 const coreConfig = {
-    typescript :{
-        ignoreBuildErrors:true,
-    },
-    eslint : {
-        ignoreDuringBuilds:true,
-    }
+  reactStrictMode: false, // Cambia a `true` si quieres habilitar el modo estricto
+  swcMinify: true, // Usa el minificador SWC
+  typescript: {
+    ignoreBuildErrors: true, // Ignorar errores de TypeScript durante la construcción
+  },
+  eslint: {
+    ignoreDuringBuilds: true, // Ignorar errores de ESLint durante la construcción
+  },
 };
 
-import withPWA from "@ducanh2912/next-pwa";
+// Importar los plugins necesarios
+import withPWA from "@ducanh2912/next-pwa"; // Plugin para PWA
+import { withSentryConfig } from "@sentry/nextjs"; // Plugin para Sentry
 
-import { withSentryConfig } from "@sentry/nextjs";
+// Configuración de Sentry
+const sentryConfig = withSentryConfig(coreConfig, {
+  org: "bridge23-data", // Tu organización en Sentry
+  project: "bridge23-data", // Tu proyecto en Sentry
 
-const config = withSentryConfig(
-  
-  coreConfig ,
-  {
-    // For all available options, see:
-    // https://github.com/getsentry/sentry-webpack-plugin#options
+  // Opciones avanzadas de Sentry
+  silent: !process.env.CI, // Solo imprime logs en CI
+  widenClientFileUpload: true, // Subir un conjunto más amplio de mapas de origen
+  reactComponentAnnotation: { enabled: true }, // Anotar componentes de React para rastreo
+  hideSourceMaps: true, // Ocultar mapas de origen en el cliente
+  disableLogger: true, // Reducir el tamaño del bundle al eliminar el logger de Sentry
+  automaticVercelMonitors: true, // Habilitar monitores automáticos en Vercel
+});
 
-    org: "bridge23-data",
-    project: "bridge23-data",
-
-
-    // Only print logs for uploading source maps in CI
-    silent: !process.env.CI,
-
-    // For all available options, see:
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-
-    // Upload a larger set of source maps for prettier stack traces (increases build time)
-    widenClientFileUpload: true,
-
-    // Automatically annotate React components to show their full name in breadcrumbs and session replay
-    reactComponentAnnotation: {
-      enabled: true,
-    },
-
-    // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-    // This can increase your server load as well as your hosting bill.
-    // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-    // side errors will fail.
-    // tunnelRoute: "/monitoring",
-
-    // Hides source maps from generated client bundles
-    hideSourceMaps: true,
-
-    // Automatically tree-shake Sentry logger statements to reduce bundle size
-    disableLogger: true,
-
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
-    automaticVercelMonitors: true,
-  }
-);
-
-const new_config = withPWA({
-  dest: "public",
-  register: true,
+// Configuración de PWA
+const pwaConfig = withPWA({
+  dest: "public", // Generar archivos en la carpeta `public`
+  register: true, // Registrar el Service Worker automáticamente
   workboxOptions: {
-    skipWaiting: true,
-  }
-})({config,  
-  reactStrictMode: false,
-  swcMinify: false,
-},
-);
+    skipWaiting: true, // Hacer que el Service Worker se active inmediatamente
+  },
+})(sentryConfig); // Aplicar la configuración de Sentry
 
-export default new_config;
+// Exportar la configuración final
+export default pwaConfig;
