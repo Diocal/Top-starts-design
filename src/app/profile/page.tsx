@@ -15,7 +15,7 @@ export default function Profile() {
       rating: "4.9",
       language: "English",
       tags: ["Entertainment", "Information"],
-      avatar: "/avatar1.png", // Imagen de ejemplo
+      avatar: "/avatar1.png",
     },
     {
       sp: 70,
@@ -25,7 +25,7 @@ export default function Profile() {
       rating: "4.8",
       language: "Spanish",
       tags: ["Community", "Discussions"],
-      avatar: "/avatar1.png", // Imagen de ejemplo
+      avatar: "/avatar1.png",
     },
   ];
 
@@ -67,7 +67,7 @@ export default function Profile() {
             fontSize: "16px",
             fontWeight: "600",
             lineHeight: "24px",
-            color: "#FFFFFF", // Blanco
+            color: "#FFFFFF",
             marginLeft: "16px",
           }}
         >
@@ -236,11 +236,29 @@ export default function Profile() {
 
       {/* Add Topstars Section */}
       <div className="mt-8">
-        <Button
-          className="w-full py-4 bg-lightGold text-black rounded-md font-semibold hover:bg-yellow-500 transition-all"
+        <Card
+          className="flex items-center justify-between p-4 bg-[hsl(var(--tab-bg-inactive))] rounded-lg shadow-md"
+          style={{
+            backgroundColor: "hsl(var(--tab-bg-inactive))",
+            border: "1px solid hsl(var(--tab-bg-active))",
+          }}
         >
-          ⭐ Add topstars to channel or group + 10,000 SP
-        </Button>
+          <div className="flex items-center">
+            <img
+              src="/star.png"
+              alt="Star Icon"
+              className="mr-2 h-8 w-8 object-contain"
+            />
+            <div className="flex flex-col">
+              <span className="text-white text-sm font-semibold">
+                Add topstars to channel or group
+              </span>
+              <span className="text-lightGold text-xs font-medium">
+                + 10,000 SP
+              </span>
+            </div>
+          </div>
+        </Card>
       </div>
     </motion.div>
   );

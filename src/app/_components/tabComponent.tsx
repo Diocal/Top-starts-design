@@ -3,6 +3,7 @@
 import React from "react";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { SignedOut } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface TabComponentProps {
   global: boolean;
@@ -10,13 +11,24 @@ interface TabComponentProps {
 }
 
 const TabComponent: React.FC<TabComponentProps> = ({ global, setGlobal }) => {
+  const router = useRouter();
+
+  const handleTabChange = (value: string) => {
+    if (value === "local") {
+      setGlobal(false); // Update state before navigation
+      router.push("/channel/local"); // Ensure this matches your folder structure
+    } else {
+      setGlobal(true);
+    }
+  };
+
   return (
-    <div className="flex-1 overflow-auto px-4 mt-6 ">
-      <div className="flex-1 ">
+    <div className="flex-1 overflow-auto px-4 mt-6">
+      <div className="flex-1">
         <SignedOut>
           <Tabs
-            defaultValue={global ? "global" : "local"}
-            onValueChange={(value) => setGlobal(value === "global")}
+            value={global ? "global" : "local"} // Ensure correct tab selection
+            onValueChange={handleTabChange}
             className="mb-4"
           >
             <TabsList className="flex w-full overflow-hidden">
