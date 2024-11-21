@@ -42,6 +42,47 @@ const ContentSection: React.FC<ContentSectionProps> = ({ sections }) => {
 
   return (
     <div className="flex-1 overflow-auto px-4 pb-8">
+      {/* Choose Language Section */}
+      <div className="my-4">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-medium tracking-wide">Choose language</h2>
+          <div className="flex items-center space-x-1">
+            {/* Banderas */}
+            <img
+              src="/usaflag.png"
+              alt="English"
+              className="h-4 w-4 object-cover"
+            />
+            <img
+              src="/indonesia.png"
+              alt="Indonesian"
+              className="h-4 w-4 object-cover"
+            />
+            {/* Botón Flecha */}
+            <button
+              onClick={() => router.push("/channel/language")}
+              className="focus:outline-none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="h-5 w-5 text-white"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Section Mapping */}
       {sections.map((section, idx) => (
         <div key={idx} className="mb-6">
           {/* Section Header */}

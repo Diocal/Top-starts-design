@@ -16,6 +16,7 @@ const SearchAndTopics: React.FC<SearchAndTopicsProps> = ({
 }) => {
   return (
     <div className="my-4 flex items-center space-x-2 px-4">
+      
       {/* Search Input */}
       <div className="relative flex-1">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 transform">
@@ -52,7 +53,10 @@ const SearchAndTopics: React.FC<SearchAndTopicsProps> = ({
       </Button>
       </Link>
     </div>
+  
+
   );
+  
 };
 
 export default SearchAndTopics;

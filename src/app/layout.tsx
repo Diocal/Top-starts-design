@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <TopNav />
               {children}
 
-              {!["/channel/topic", "/channel/topic/subcategories","/channel/language","/channel/local"].includes(pathname) && (
+              {!["/channel/topic", "/channel/topic/subcategories","/channel/language","/channel/local", "/profile/addtopstars"].includes(pathname) && (
                 <nav className="fixed bottom-0 left-0 right-0 bg-gray-900">
                   <div className="flex justify-around p-2">
                     {[
